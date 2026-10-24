@@ -68,7 +68,10 @@ Output format:
 						                         remote-host)))
                 (message "ecc-remote not available")))
           ;; No remote-info provided - prompt user
-          (if (require 'ecc-remote nil t)
+          (if (and (require 'ecc-remote nil t)
+                   ;; ecc-remote may be absent or stale (feature provided but
+                   ;; function renamed/removed) -- fail soft, never void-function.
+                   (fboundp '--ecc-get-ssh-info-from-selection))
               (let ((ssh-info (--ecc-get-ssh-info-from-selection)))
                 (if ssh-info
                     ;; Remote host selected
